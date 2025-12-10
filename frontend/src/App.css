@@ -1,42 +1,85 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #bbd4df;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #root {
+  width: 100%;
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
   text-align: center;
+  color: black;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.google-login-button{
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 220px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.google-login-button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.transactions-page {
+  padding: 0;
+  margin-top: 0;
+}
+
+.card-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  
 }
 
 .card {
-  padding: 2em;
+  background-color: rgb(237, 242, 243);
+  min-width: 200px;
+  max-width: 300px;
+  border:black 2px solid;
+  margin: 30px;
+  display:flex;
+  justify-content: center;
+
 }
 
-.read-the-docs {
-  color: #888;
+.card-title {
+  margin-bottom: 0.5rem;
 }
+
+.amount {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.amount-positive {
+  color: #198754;
+}
+
+.amount-negative {
+  color: #dc3545;
+}
+
+.submit-button, .add-transaction-button, .delete {
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+
+
