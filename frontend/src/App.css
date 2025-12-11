@@ -73,7 +73,7 @@ body {
   color: #dc3545;
 }
 
-.submit-button, .add-transaction-button, .delete {
+.submit-button, .add-transaction-button, .delete, .edit {
   background-color: black;
   color: white;
   border: none;

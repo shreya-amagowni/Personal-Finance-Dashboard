@@ -1,24 +1,49 @@
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 
-export default function Transactions() {
-  // Sample data - you can replace this with real data from your backend
-  const balance = 5000;
-  const salary = 8000;
-  const expenses = 3000;
+// Reducer function
+function transactionReducer(state, action) {
+  switch (action.type) {
+    case 'ADD_TRANSACTION':
+      return [...state, action.payload];
+    case 'DELETE_TRANSACTION':
+      return state.filter(t => t.id !== action.payload);
+    case 'UPDATE_TRANSACTION':
+      return state.map(t => 
+        t.id === action.payload.id ? action.payload : t
+      );
+    default:
+      return state;
+  }
+}
 
+export default function Transactions() {
   // State for form inputs
   const [transactionName, setTransactionName] = useState('');
   const [transactionAmount, setTransactionAmount] = useState('');
   const [transactionType, setTransactionType] = useState('expense');
   
-  // State for transactions list
-  const [transactions, setTransactions] = useState([]);
+  // Use reducer for transactions
+  const [transactions, dispatch] = useReducer(transactionReducer, []);
   
   // State for showing/hiding form
   const [showForm, setShowForm] = useState(false);
+  
+  // State for editing
+  const [editingId, setEditingId] = useState(null);
 
-  // Handle form submit (Create)
+  // Calculate totals dynamically from transactions
+  const salary = transactions
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const expenses = transactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+  
+  const balance = salary - expenses;
+
+  // Handle form submit (Create or Update)
   const handleSubmit = (e) => {
     e.preventDefault();
     
@@ -27,14 +52,30 @@ export default function Transactions() {
       return;
     }
 
-    // Create new transaction
-    const newTransaction = {
-      id: Date.now(),
-      name: transactionName,
-      amount: Number(transactionAmount),
-      type: transactionType
-    };
-    setTransactions([...transactions, newTransaction]);
+    if (editingId) {
+      // Update existing transaction
+      dispatch({
+        type: 'UPDATE_TRANSACTION',
+        payload: {
+          id: editingId,
+          name: transactionName,
+          amount: Number(transactionAmount),
+          type: transactionType
+        }
+      });
+      setEditingId(null);
+    } else {
+      // Add new transaction
+      dispatch({
+        type: 'ADD_TRANSACTION',
+        payload: {
+          id: Date.now(),
+          name: transactionName,
+          amount: Number(transactionAmount),
+          type: transactionType
+        }
+      });
+    }
 
     // Clear form
     setTransactionName('');
@@ -46,8 +87,17 @@ export default function Transactions() {
   // Handle delete
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
-      setTransactions(transactions.filter(t => t.id !== id));
+      dispatch({ type: 'DELETE_TRANSACTION', payload: id });
     }
+  };
+
+  // Handle edit
+  const handleEdit = (transaction) => {
+    setTransactionName(transaction.name);
+    setTransactionAmount(transaction.amount);
+    setTransactionType(transaction.type);
+    setEditingId(transaction.id);
+    setShowForm(true);
   };
 
   return (
@@ -89,6 +139,7 @@ export default function Transactions() {
                 <Card.Body>
                   <Card.Title>{transaction.name}</Card.Title>
                   <Card.Text>${transaction.amount.toLocaleString()} - {transaction.type}</Card.Text>
+                  <button onClick={() => handleEdit(transaction)} className="edit">Edit</button>
                   <button onClick={() => handleDelete(transaction.id)} className="delete">Delete</button>
                 </Card.Body>
               </Card>
@@ -106,7 +157,7 @@ export default function Transactions() {
         {showForm && (
           <Card>
             <Card.Body>
-              <Card.Title>Add Transaction</Card.Title>
+              <Card.Title> {editingId ? 'Edit Transaction' : 'Add Transaction'} </Card.Title>
               <form className="add-transaction-form" onSubmit={handleSubmit}>
                 <label className="transaction-name"> Transaction Name:
                   <input 
@@ -139,8 +190,7 @@ export default function Transactions() {
                   </select>
                 </label>
                 
-
-                <button type="submit" className="submit-button">Submit</button>
+                <button type="submit" className="submit-button">  {editingId ? 'Update' : 'Submit'} </button>
                 
               </form>  
             </Card.Body>
@@ -148,8 +198,6 @@ export default function Transactions() {
         )}
 
       </section>
-
-
 
     </section>
   );

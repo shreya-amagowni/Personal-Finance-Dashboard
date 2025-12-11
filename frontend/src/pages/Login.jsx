@@ -7,13 +7,14 @@ export default function Login() {
   const login = useGoogleLogin({
     onSuccess: (credentialResponse) => {
       console.log("Login Successful:", credentialResponse);
-
-      // You can handle the successful login here, e.g., send the token to your server
+      
+      // Store userId from Google token
+      localStorage.setItem('userId', credentialResponse.access_token);
+      
       navigate('/transactions');
     },
     onError: () => {
       console.log("Login Failed");
-      // You can handle the login failure here
     }
   });
 
