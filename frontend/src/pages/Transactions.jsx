@@ -1,30 +1,27 @@
-import { useReducer, useState } from 'react';
+import { useState } from 'react';
+import useSWR from "swr";
 import Card from 'react-bootstrap/Card';
 
-// Reducer function
-function transactionReducer(state, action) {
-  switch (action.type) {
-    case 'ADD_TRANSACTION':
-      return [...state, action.payload];
-    case 'DELETE_TRANSACTION':
-      return state.filter(t => t.id !== action.payload);
-    case 'UPDATE_TRANSACTION':
-      return state.map(t => 
-        t.id === action.payload.id ? action.payload : t
-      );
-    default:
-      return state;
-  }
-}
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Transactions() {
+  const userId = localStorage.getItem("userId");
+
+  // Fetch all transactions
+  const {
+    data: transactions,
+    error,
+    mutate,
+    isLoading,
+  } = useSWR(
+    userId ? `/api/transactions/${userId}` : null,
+    fetcher
+  );
+
   // State for form inputs
   const [transactionName, setTransactionName] = useState('');
   const [transactionAmount, setTransactionAmount] = useState('');
   const [transactionType, setTransactionType] = useState('expense');
-  
-  // Use reducer for transactions
-  const [transactions, dispatch] = useReducer(transactionReducer, []);
   
   // State for showing/hiding form
   const [showForm, setShowForm] = useState(false);
@@ -32,19 +29,26 @@ export default function Transactions() {
   // State for editing
   const [editingId, setEditingId] = useState(null);
 
+  // Loading state
+  if (isLoading) return <p>Loading transactions...</p>;
+  if (error) return <p>Error fetching data.</p>;
+
+
+  const list = transactions || [];
+
   // Calculate totals dynamically from transactions
-  const salary = transactions
+  const salary = list
     .filter(t => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
   
-  const expenses = transactions
+  const expenses = list
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
   
   const balance = salary - expenses;
 
-  // Handle form submit (Create or Update)
-  const handleSubmit = (e) => {
+  // Handle form submit (Create POST or Update PUT)
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!transactionName || !transactionAmount) {
@@ -53,28 +57,45 @@ export default function Transactions() {
     }
 
     if (editingId) {
-      // Update existing transaction
-      dispatch({
-        type: 'UPDATE_TRANSACTION',
-        payload: {
-          id: editingId,
+      const res = await fetch(`/api/transactions/${editingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId, 
           name: transactionName,
           amount: Number(transactionAmount),
-          type: transactionType
-        }
+          type: transactionType,
+        }),
       });
+
+      const updated = await res.json();
+
+      mutate(
+        list.map((t) => (t._id === editingId ? updated : t)),
+        false
+      );
+
       setEditingId(null);
-    } else {
-      // Add new transaction
-      dispatch({
-        type: 'ADD_TRANSACTION',
-        payload: {
-          id: Date.now(),
+    } 
+
+    else {
+      const res = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
           name: transactionName,
           amount: Number(transactionAmount),
-          type: transactionType
-        }
+          type: transactionType,
+        }),
       });
+      
+      const newTransaction = await res.json();
+      mutate([newTransaction, ...list], false);
     }
 
     // Clear form
@@ -85,18 +106,26 @@ export default function Transactions() {
   };
 
   // Handle delete
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this transaction?')) {
-      dispatch({ type: 'DELETE_TRANSACTION', payload: id });
-    }
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this transaction?')) return;
+
+    await fetch(`/api/transactions/${id}`, {
+      method: 'DELETE',
+    });
+
+    mutate(
+      list.filter((t) => t._id !== id),
+      false
+    );
   };
+
 
   // Handle edit
   const handleEdit = (transaction) => {
     setTransactionName(transaction.name);
     setTransactionAmount(transaction.amount);
     setTransactionType(transaction.type);
-    setEditingId(transaction.id);
+    setEditingId(transaction._id);
     setShowForm(true);
   };
 
@@ -130,17 +159,17 @@ export default function Transactions() {
 
       <section className="transaction-list">
         <h4>List of transactions</h4>
-        {transactions.length === 0 ? (
+        {list.length === 0 ? (
           <p>No transactions yet. Add your transactions!</p>
         ) : (
           <section>
-            {transactions.map((transaction) => (
-              <Card key={transaction.id} className="transaction-card">
+            {list.map((transaction) => (
+              <Card key={transaction._id} className="transaction-card">
                 <Card.Body>
                   <Card.Title>{transaction.name}</Card.Title>
                   <Card.Text>${transaction.amount.toLocaleString()} - {transaction.type}</Card.Text>
                   <button onClick={() => handleEdit(transaction)} className="edit">Edit</button>
-                  <button onClick={() => handleDelete(transaction.id)} className="delete">Delete</button>
+                  <button onClick={() => handleDelete(transaction._id)} className="delete">Delete</button>
                 </Card.Body>
               </Card>
             ))}
