@@ -26,7 +26,7 @@ export default function Login() {
   };
 
   return (
-    <section className="login-page">
+    <section className="login-page tracking-in-expand">
       <h1>Welcome to your Personal Finance Dashboard </h1>
       <p>you can keep track of all your finances with this one tool!</p>
 
