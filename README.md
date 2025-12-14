@@ -9,6 +9,7 @@ Personal Finance Dashboard is a full-stack app that lets you log income and expe
 - Database: MongoDB via Mongoose with a `Transaction` model.
 - External API: Frankfurter currency API for USD→EUR/INR rates.
 
+📊 **[View Sequence Diagrams](SEQUENCE_DIAGRAM.md)** - Detailed flow diagrams for login, CRUD operations, and system architecture.
 
 ## Repository Structure
 
@@ -37,8 +38,8 @@ backend/.env
 MONGO_URI="<your MongoDB connection string>"
 
 frontend/.env.local
-VITE_GOOGLE_CLIENT_ID="<your Google OAuth client id>"
-VITE_GOOGLE_CLIENT_SECRET="<you Google OAuth client secret>"
+VITE_GOOGLE_CLIENT_ID="your Google OAuth client id"
+VITE_GOOGLE_CLIENT_SECRET="you Google OAuth client secret"
 
 
 ## API Reference
@@ -53,7 +54,6 @@ Transactions
 Exchange Rates
 - `GET /rates` — returns latest USD→EUR/INR rates from Frankfurter
 
-
 ## Data Model
 `Transaction`
 ```json
@@ -65,7 +65,6 @@ Exchange Rates
 	"createdAt": "ISO date"
 }
 ```
-
 
 ## Local Development
 1) Backend
