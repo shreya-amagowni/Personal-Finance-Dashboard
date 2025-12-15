@@ -1,0 +1,5 @@
+runtime: nodejs20 
+env: standard
+env_variables:
+  NODE_ENV: 'production'
+  MONGO_URI: 'mongodb+srv://amagownishreya_db_user:SucessfulDeployment@personal-finance-dashbo.etz0j1s.mongodb.net/?appName=Personal-Finance-Dashboard'

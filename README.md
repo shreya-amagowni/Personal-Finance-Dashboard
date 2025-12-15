@@ -2,6 +2,7 @@
 
 Personal Finance Dashboard is a full-stack app that lets you log income and expenses, view running balances, and see live USD to EUR and INR exchange rates. Google OAuth provides a simple login flow, while MongoDB stores each user's transactions.
 
+- Video link : https://drive.google.com/file/d/1qtpHaNkn7Y6Hf1xEC6NXEexQFX1uHnHG/view?usp=sharing
 
 ## Architecture
 
@@ -39,8 +40,8 @@ backend/.env
 MONGO_URI="<your MongoDB connection string>"
 
 frontend/.env.local
-VITE_GOOGLE_CLIENT_ID="your Google OAuth client id"
-VITE_GOOGLE_CLIENT_SECRET="you Google OAuth client secret"
+VITE_GOOGLE_CLIENT_ID="<your Google OAuth client id>"
+VITE_GOOGLE_CLIENT_SECRET="<you Google OAuth client secret>"
 
 
 ## API Reference
@@ -102,6 +103,21 @@ npm install
 npm start
 ```
 
+## Playwright Testing
+- This project uses Playwright for end-to-end testing of the frontend when served locally by the backend. The tests verify that the application loads correctly and that essential UI elements are visible.
+
+- Running tests locally 
+```bash
+cd backend
+npm start
+```
+- in another terminal 
+```bash
+cd frontend
+sudo npx playwright install-deps // one-time setup, required in Dev Containers
+npx playwright test
+```
+
 ## References Used
 - https://frankfurter.dev/ used as an external API for live exchange rates
 - https://animista.net/ for some of the css animations
@@ -114,8 +130,9 @@ npm start
 - Expose port 5000 (or configure your host to map it). If your host assigns a dynamic port, set an env var `PORT` (e.g., `PORT=8080`) and update `backend/server.js` to use `const PORT = process.env.PORT || 5000;` before starting the server.
 
 ## Deployment status (for professor):
-- App runs locally with the steps above. The latest deploy attempt on the host failed because the server could not find `index.html` to serve (the build was present locally). I tried workarounds and debugging, but due to time constraints I'm documenting this here.
-- Video link : https://drive.google.com/file/d/1qtpHaNkn7Y6Hf1xEC6NXEexQFX1uHnHG/view?usp=sharing
+- App runs locally with the production steps above. I have created a dist in frontend and im serving it in from the backend. So running the command `npm server.js` in one terminal executes the whole project without running backend and frontend separately. The latest deploy attempt on the host failed because the server could not find `index.html` to serve (the build was present locally). I tried workarounds and debugging, but due to time constraints I'm documenting this here.
+
+
 
 
 
