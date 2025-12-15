@@ -2,6 +2,7 @@
 
 Personal Finance Dashboard is a full-stack app that lets you log income and expenses, view running balances, and see live USD to EUR and INR exchange rates. Google OAuth provides a simple login flow, while MongoDB stores each user's transactions.
 
+
 ## Architecture
 
 - Frontend: React (Vite), React Router, SWR for data fetching, Bootstrap for layout/styling, Google OAuth for login.
@@ -9,7 +10,7 @@ Personal Finance Dashboard is a full-stack app that lets you log income and expe
 - Database: MongoDB via Mongoose with a `Transaction` model.
 - External API: Frankfurter currency API for USD→EUR/INR rates.
 
-📊 **[View Sequence Diagrams](SEQUENCE_DIAGRAM.md)** - Detailed flow diagrams for login, CRUD operations, and system architecture.
+📊 **[View Sequence Diagrams](SequenceDiagram.avif)** - Detailed flow diagrams for login, CRUD operations, and system architecture.
 
 ## Repository Structure
 
@@ -101,6 +102,12 @@ npm install
 npm start
 ```
 
+## References Used
+- https://frankfurter.dev/ used as an external API for live exchange rates
+- https://animista.net/ for some of the css animations
+- Github copilot with code suggestions and project scaffolding during development
+
+
 ## Deploy notes:
 - Ensure `frontend/dist` exists in the deployed artifact
 - Set `MONGO_URI` in your hosting environment.
@@ -108,5 +115,8 @@ npm start
 
 ## Deployment status (for professor):
 - App runs locally with the steps above. The latest deploy attempt on the host failed because the server could not find `index.html` to serve (the build was present locally). I tried workarounds and debugging, but due to time constraints I'm documenting this here.
+- Video link : https://drive.google.com/file/d/1qtpHaNkn7Y6Hf1xEC6NXEexQFX1uHnHG/view?usp=sharing
+
+
 
 
