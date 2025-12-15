@@ -12,6 +12,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -34,7 +35,7 @@ app.get(/.*/, (req, res) => {
 });
 
 // --- Start the Server --- //
-const PORT = 5000;
+const PORT = process.env.PORT ||5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend Server running on http://localhost:${PORT}`);
 });
