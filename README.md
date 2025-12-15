@@ -130,7 +130,7 @@ npx playwright test
 - Expose port 5000 (or configure your host to map it). If your host assigns a dynamic port, set an env var `PORT` (e.g., `PORT=8080`) and update `backend/server.js` to use `const PORT = process.env.PORT || 5000;` before starting the server.
 
 ## Deployment status (for professor):
-- App runs locally with the production steps above. I have created a dist in frontend and im serving it in from the backend. So running the command `npm server.js` in one terminal executes the whole project without running backend and frontend separately. The latest deploy attempt on the host failed because the server could not find `index.html` to serve (the build was present locally). I tried workarounds and debugging, but due to time constraints I'm documenting this here.
+- App runs locally with the production steps above. I have created a dist in frontend and im serving it in from the backend. So running the command `node server.js` in one terminal executes the whole project without running backend and frontend separately. The latest deploy attempt on the host failed because the server could not find `index.html` to serve (the build was present locally). I tried workarounds and debugging, but due to time constraints I'm documenting this here.
 
 
 
